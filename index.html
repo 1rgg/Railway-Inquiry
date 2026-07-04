@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="静态火车票查询网页 - 基于 12306 开放 API，支持单站查询、直达查询与中转方案查询">
+    <title>火车票查询</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="page-wrap">
+        <!-- 顶部标题 -->
+        <header class="page-header">
+            <h1 class="page-title">
+                <svg class="title-icon" viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+                    <path fill="currentColor" d="M12 2c-4.42 0-8 3-8 6.67V16c0 .92.38 1.74 1 2.34V20a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1h8v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1.66c.62-.6 1-1.42 1-2.34V8.67C20 5 16.42 2 12 2Zm0 2c3.31 0 6 2.1 6 4.67H6C6 6.1 8.69 4 12 4ZM6 12V9h12v3H6Zm9.5 4a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm-7 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"/>
+                </svg>
+                火车票查询
+            </h1>
+        </header>
+
+        <!-- 中部：查询操作区 -->
+        <main class="query-panel">
+            <!-- 功能选项卡 -->
+            <nav class="tabs" role="tablist" aria-label="查询模式切换">
+                <button class="tab active" data-mode="single" role="tab" aria-selected="true">单站查询</button>
+                <button class="tab" data-mode="direct" role="tab" aria-selected="false">直达查询</button>
+                <button class="tab" data-mode="transfer" role="tab" aria-selected="false">中转查询</button>
+            </nav>
+
+            <!-- 输入框组 -->
+            <section class="search-form" id="searchForm">
+                <!-- 单站查询 -->
+                <div class="form-row active" data-form="single">
+                    <div class="form-field">
+                        <label for="singleStation" class="form-label">车站名称</label>
+                        <input type="text" id="singleStation" class="form-input" placeholder="请输入车站 / 城市名称，如 长春" autocomplete="off">
+                    </div>
+                    <button type="button" class="btn-primary" data-action="query-single">查询</button>
+                </div>
+
+                <!-- 直达查询 -->
+                <div class="form-row" data-form="direct" hidden>
+                    <div class="form-field">
+                        <label for="departStation" class="form-label">出发站</label>
+                        <input type="text" id="departStation" class="form-input" placeholder="出发站" autocomplete="off">
+                    </div>
+                    <span class="field-separator" aria-hidden="true">→</span>
+                    <div class="form-field">
+                        <label for="arriveStation" class="form-label">到达站</label>
+                        <input type="text" id="arriveStation" class="form-input" placeholder="到达站" autocomplete="off">
+                    </div>
+                    <button type="button" class="btn-primary" data-action="query-direct">查询</button>
+                </div>
+
+                <!-- 中转查询 -->
+                <div class="form-row" data-form="transfer" hidden>
+                    <div class="form-field">
+                        <label for="transferFrom" class="form-label">出发站</label>
+                        <input type="text" id="transferFrom" class="form-input" placeholder="出发站" autocomplete="off">
+                    </div>
+                    <span class="field-separator" aria-hidden="true">→</span>
+                    <div class="form-field">
+                        <label for="transferCity" class="form-label">中转城市</label>
+                        <input type="text" id="transferCity" class="form-input" placeholder="中转城市" autocomplete="off">
+                    </div>
+                    <span class="field-separator" aria-hidden="true">→</span>
+                    <div class="form-field">
+                        <label for="transferTo" class="form-label">到达站</label>
+                        <input type="text" id="transferTo" class="form-input" placeholder="到达站" autocomplete="off">
+                    </div>
+                    <button type="button" class="btn-primary" data-action="query-transfer">查询</button>
+                </div>
+            </section>
+
+            <!-- 热门中转城市快捷选择（仅中转查询显示） -->
+            <section class="quick-cities" id="quickCities" hidden>
+                <span class="quick-label">热门中转：</span>
+                <button type="button" class="city-chip" data-city="北京">北京</button>
+                <button type="button" class="city-chip" data-city="上海">上海</button>
+                <button type="button" class="city-chip" data-city="广州">广州</button>
+                <button type="button" class="city-chip" data-city="郑州">郑州</button>
+                <button type="button" class="city-chip" data-city="武汉">武汉</button>
+                <button type="button" class="city-chip" data-city="南京">南京</button>
+                <button type="button" class="city-chip" data-city="西安">西安</button>
+            </section>
+
+            <!-- 历史查询记录 -->
+            <section class="history-section" id="historySection" hidden>
+                <div class="history-header">
+                    <span class="history-title">最近查询</span>
+                    <button type="button" class="link-btn" id="clearHistory">清空</button>
+                </div>
+                <div class="history-list" id="historyList"></div>
+            </section>
+
+            <!-- 轻量提示 -->
+            <p class="toast" id="toast" role="alert" hidden></p>
+        </main>
+
+        <!-- 结果展示区 -->
+        <section class="result-panel" id="resultPanel">
+            <!-- 默认占位提示 -->
+            <div class="placeholder" id="placeholder">
+                <svg class="placeholder-icon" viewBox="0 0 24 24" width="64" height="64" aria-hidden="true">
+                    <path fill="currentColor" d="M12 2a9 9 0 0 0-9 9c0 3.5 2 6.5 5 8v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3c3-1.5 5-4.5 5-8a9 9 0 0 0-9-9Zm-3 9a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Zm6 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"/>
+                </svg>
+                <p class="placeholder-text">请输入车站名称开始查询</p>
+            </div>
+
+            <!-- 加载动画 -->
+            <div class="loader" id="loader" hidden>
+                <div class="spinner"></div>
+                <p class="loader-text">正在查询，请稍候...</p>
+            </div>
+
+            <!-- 错误提示 -->
+            <div class="error-box" id="errorBox" hidden></div>
+
+            <!-- 结果容器 -->
+            <div class="result-content" id="resultContent"></div>
+
+            <!-- 分页控件 -->
+            <nav class="pagination" id="pagination" hidden>
+                <button type="button" class="page-btn" data-page="prev" disabled>上一页</button>
+                <span class="page-info">
+                    第 <input type="number" class="page-jump" id="pageJump" min="1" value="1"> 页 / 共 <span id="totalPages">1</span> 页
+                </span>
+                <button type="button" class="page-btn" data-page="next" disabled>下一页</button>
+            </nav>
+        </section>
+
+        <footer class="page-footer">
+            <p>数据来源：12306 开放 API · 仅供学习查询使用</p>
+        </footer>
+    </div>
+
+    <!-- JS 模块（按依赖顺序加载） -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/cache.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/transfer.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

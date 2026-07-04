@@ -1,0 +1,669 @@
+/* =========================================================================
+   火车票查询 - 样式表
+   设计原则：简约扁平化，主色调 #165DFF（铁路蓝），圆角弱阴影
+   布局：最大宽度 1200px 居中，桌面端横向，移动端（≤768px）纵向堆叠
+   ========================================================================= */
+
+/* ---------- 变量定义 ---------- */
+:root {
+    --color-primary: #165DFF;
+    --color-primary-hover: #0E4AD8;
+    --color-primary-light: #E8F0FF;
+    --color-text: #1D2129;
+    --color-text-secondary: #4E5969;
+    --color-text-tertiary: #86909C;
+    --color-bg: #F2F3F5;
+    --color-card-bg: #FFFFFF;
+    --color-border: #E5E6EB;
+    --color-danger: #F53F3F;
+    --color-success: #00B42A;
+    --color-warning: #FF7D00;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.04);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --max-width: 1200px;
+    --transition: 0.2s ease;
+}
+
+/* ---------- 基础重置 ---------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+        "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
+}
+
+input {
+    font-family: inherit;
+    font-size: inherit;
+}
+
+/* ---------- 页面容器 ---------- */
+.page-wrap {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 24px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ---------- 顶部标题 ---------- */
+.page-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: var(--color-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title-icon {
+    flex-shrink: 0;
+}
+
+/* ---------- 查询面板 ---------- */
+.query-panel {
+    background: var(--color-card-bg);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 20px;
+}
+
+/* ---------- 选项卡 ---------- */
+.tabs {
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 20px;
+}
+
+.tab {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+    border-bottom: 2px solid transparent;
+    transition: color var(--transition), border-color var(--transition);
+    white-space: nowrap;
+}
+
+.tab:hover {
+    color: var(--color-primary);
+}
+
+.tab.active {
+    color: var(--color-primary);
+    border-bottom-color: var(--color-primary);
+    font-weight: 600;
+}
+
+/* ---------- 搜索表单 ---------- */
+.form-row {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.form-field {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background: var(--color-card-bg);
+    color: var(--color-text);
+    transition: border-color var(--transition), box-shadow var(--transition);
+    min-width: 0;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-primary-light);
+}
+
+.field-separator {
+    color: var(--color-text-tertiary);
+    padding-bottom: 12px;
+    flex-shrink: 0;
+}
+
+.btn-primary {
+    padding: 10px 28px;
+    background: var(--color-primary);
+    color: #fff;
+    border-radius: var(--radius-md);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background var(--transition), transform var(--transition);
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.btn-primary:hover {
+    background: var(--color-primary-hover);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.btn-primary:disabled {
+    background: var(--color-text-tertiary);
+    cursor: not-allowed;
+}
+
+/* ---------- 热门中转城市 ---------- */
+.quick-cities {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--color-border);
+}
+
+.quick-label {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.city-chip {
+    padding: 4px 14px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: 16px;
+    font-size: 0.85rem;
+    transition: background var(--transition);
+}
+
+.city-chip:hover {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+/* ---------- 历史记录 ---------- */
+.history-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--color-border);
+}
+
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.history-title {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+}
+
+.link-btn {
+    font-size: 0.85rem;
+    color: var(--color-text-tertiary);
+    padding: 2px 6px;
+}
+
+.link-btn:hover {
+    color: var(--color-danger);
+}
+
+.history-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.history-item {
+    padding: 4px 12px;
+    background: var(--color-bg);
+    border-radius: var(--radius-sm);
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    border: 1px solid var(--color-border);
+    transition: border-color var(--transition), color var(--transition);
+}
+
+.history-item:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* ---------- 轻量提示 toast ---------- */
+.toast {
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+}
+
+/* ---------- 结果面板 ---------- */
+.result-panel {
+    background: var(--color-card-bg);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    flex: 1;
+    min-height: 300px;
+}
+
+/* ---------- 占位提示 ---------- */
+.placeholder {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--color-text-tertiary);
+}
+
+.placeholder-icon {
+    opacity: 0.4;
+}
+
+.placeholder-text {
+    margin-top: 12px;
+    font-size: 0.95rem;
+}
+
+/* ---------- 加载动画 ---------- */
+.loader {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--color-text-secondary);
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 16px;
+    border: 3px solid var(--color-border);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loader-text {
+    font-size: 0.9rem;
+}
+
+/* ---------- 错误提示 ---------- */
+.error-box {
+    padding: 40px 20px;
+    text-align: center;
+    color: var(--color-danger);
+    font-size: 0.95rem;
+}
+
+/* ---------- 结果统计栏 ---------- */
+.result-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.summary-text {
+    font-size: 0.95rem;
+    color: var(--color-text-secondary);
+}
+
+.summary-text strong {
+    color: var(--color-primary);
+    font-size: 1.1rem;
+}
+
+.summary-station {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+/* ---------- 车次列表表格（桌面端） ---------- */
+.train-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+}
+
+.train-table thead th {
+    text-align: left;
+    padding: 12px;
+    background: var(--color-bg);
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--color-border);
+    white-space: nowrap;
+}
+
+.train-table tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--color-border);
+    color: var(--color-text);
+}
+
+.train-table tbody tr:hover {
+    background: var(--color-primary-light);
+}
+
+.train-number {
+    font-weight: 600;
+    color: var(--color-primary);
+}
+
+/* 运行状态徽章 */
+.status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+}
+
+.status-normal {
+    background: #E8FFEA;
+    color: var(--color-success);
+}
+
+.status-checking {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+}
+
+.status-late {
+    background: #FFF3E8;
+    color: var(--color-warning);
+}
+
+.status-stopped {
+    background: #FFECE8;
+    color: var(--color-danger);
+}
+
+/* ---------- 中转方案卡片 ---------- */
+.transfer-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: box-shadow var(--transition);
+}
+
+.transfer-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.transfer-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    font-size: 0.9rem;
+}
+
+.transfer-card-header strong {
+    font-size: 1rem;
+}
+
+.transfer-segment {
+    padding: 16px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.transfer-segment:last-of-type {
+    border-bottom: none;
+}
+
+.transfer-segment-title {
+    font-size: 0.85rem;
+    color: var(--color-text-secondary);
+    margin-bottom: 10px;
+}
+
+.transfer-layover {
+    text-align: center;
+    padding: 10px;
+    background: var(--color-bg);
+    color: var(--color-warning);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* 无结果提示 */
+.no-result {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--color-text-tertiary);
+}
+
+.no-result-text {
+    margin-top: 12px;
+    font-size: 0.95rem;
+}
+
+.no-result a {
+    color: var(--color-primary);
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* ---------- 分页控件 ---------- */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+}
+
+.page-btn {
+    padding: 6px 18px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    color: var(--color-text-secondary);
+    background: var(--color-card-bg);
+    transition: all var(--transition);
+}
+
+.page-btn:hover:not(:disabled) {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.page-btn:disabled {
+    color: var(--color-text-tertiary);
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.page-info {
+    font-size: 0.9rem;
+    color: var(--color-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.page-jump {
+    width: 56px;
+    padding: 4px 8px;
+    text-align: center;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+}
+
+.page-jump:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* ---------- 页脚 ---------- */
+.page-footer {
+    text-align: center;
+    margin-top: 24px;
+    color: var(--color-text-tertiary);
+    font-size: 0.8rem;
+}
+
+/* =========================================================================
+   响应式适配：移动端（≤768px）
+   查询区纵向堆叠，结果列表转为卡片式布局
+   ========================================================================= */
+@media (max-width: 768px) {
+    .page-wrap {
+        padding: 16px 12px 32px;
+    }
+
+    .page-title {
+        font-size: 1.4rem;
+    }
+
+    .query-panel,
+    .result-panel {
+        padding: 14px;
+    }
+
+    /* 表单纵向堆叠 */
+    .form-row {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .field-separator {
+        display: none;
+    }
+
+    .btn-primary {
+        width: 100%;
+    }
+
+    .tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .tab {
+        padding: 8px 14px;
+        font-size: 0.9rem;
+    }
+
+    /* 结果列表转为卡片式 */
+    .train-table thead {
+        display: none;
+    }
+
+    .train-table,
+    .train-table tbody,
+    .train-table tr,
+    .train-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .train-table tr {
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        margin-bottom: 12px;
+        padding: 8px 0;
+    }
+
+    .train-table tr:hover {
+        background: transparent;
+    }
+
+    .train-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 14px;
+        border-bottom: none;
+    }
+
+    /* 移动端每行前添加字段标签（通过 data-label 伪元素） */
+    .train-table td::before {
+        content: attr(data-label);
+        color: var(--color-text-secondary);
+        font-size: 0.85rem;
+        flex-shrink: 0;
+        margin-right: 12px;
+    }
+
+    .pagination {
+        gap: 8px;
+    }
+
+    .page-btn {
+        padding: 6px 12px;
+    }
+}
+
+/* 超小屏适配（≤400px） */
+@media (max-width: 400px) {
+    .page-title {
+        font-size: 1.2rem;
+    }
+
+    .city-chip {
+        padding: 3px 10px;
+        font-size: 0.8rem;
+    }
+}

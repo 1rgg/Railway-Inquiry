@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>单元测试 - 火车票查询</title>
+    <style>
+        body { font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif; background: #f2f3f5; margin: 0; padding: 24px; color: #1d2129; }
+        h1 { color: #165DFF; font-size: 1.4rem; }
+        .summary { margin: 12px 0 20px; font-size: 0.95rem; color: #4e5969; }
+        .summary strong { color: #165DFF; }
+        #results { max-width: 900px; }
+        .case { background: #fff; border-radius: 8px; padding: 10px 14px; margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; }
+        .case .name { font-size: 0.9rem; }
+        .case .status { font-size: 0.85rem; font-weight: 600; padding: 2px 10px; border-radius: 12px; }
+        .pass { background: #e8ffea; color: #00b42a; }
+        .fail { background: #ffece8; color: #f53f3f; }
+        .fail .name { color: #f53f3f; }
+        pre { background: #fff; border: 1px solid #e5e6eb; border-radius: 6px; padding: 10px; font-size: 0.8rem; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>火车票查询 - 单元测试</h1>
+    <div class="summary" id="summary">运行中...</div>
+    <pre id="log" hidden></pre>
+    <div id="results"></div>
+
+    <!-- 复用生产代码模块 -->
+    <script src="../js/config.js"></script>
+    <script src="../js/utils.js"></script>
+    <script src="../js/cache.js"></script>
+    <script src="../js/api.js"></script>
+    <script src="../js/transfer.js"></script>
+    <!-- ui.js 与 app.js 依赖 DOM，不在此加载 -->
+
+    <!-- 测试用例 -->
+    <script src="utils.test.js"></script>
+    <script src="transfer.test.js"></script>
+    <script src="cache.test.js"></script>
+    <script src="api.test.js"></script>
+
+    <!-- 极简测试运行器 -->
+    <script>
+        (function () {
+            'use strict';
+            const resultsEl = document.getElementById('results');
+            const summaryEl = document.getElementById('summary');
+            const logEl = document.getElementById('log');
+            const logs = [];
+            let passed = 0, failed = 0, total = 0;
+
+            // 测试队列：支持同步 / Promise 异步用例
+            const queue = [];
+            window.__test = function (name, fn) {
+                queue.push({ name: name, fn: fn });
+            };
+
+            // 渲染单条结果
+            function record(name, ok, err) {
+                total++;
+                if (ok) passed++; else failed++;
+                const div = document.createElement('div');
+                div.className = 'case ' + (ok ? 'pass' : 'fail');
+                const msg = ok ? '通过' : (err && err.message ? err.message : '失败');
+                div.innerHTML = '<span class="name"></span><span class="status"></span>';
+                div.querySelector('.name').textContent = name;
+                div.querySelector('.status').textContent = ok ? '通过' : '失败';
+                resultsEl.appendChild(div);
+                if (!ok) {
+                    logs.push('[FAIL] ' + name + '\n  ' + (err && err.stack ? err.stack : msg));
+                } else {
+                    logs.push('[PASS] ' + name);
+                }
+                summaryEl.innerHTML = '运行中... 已完成 <strong>' + total + '</strong> 项';
+            }
+
+            // 顺序执行队列（支持返回 Promise 的异步用例）
+            async function runAll() {
+                for (const t of queue) {
+                    try {
+                        const ret = t.fn();
+                        if (ret && typeof ret.then === 'function') {
+                            await ret;
+                        }
+                        record(t.name, true, null);
+                    } catch (e) {
+                        record(t.name, false, e);
+                    }
+                }
+                summaryEl.innerHTML = '共 <strong>' + total + '</strong> 项 · 通过 <strong style="color:#00b42a">' + passed + '</strong> · 失败 <strong style="color:#f53f3f">' + failed + '</strong>';
+                if (logs.length) { logEl.hidden = false; logEl.textContent = logs.join('\n'); }
+            }
+
+            // 断言工具
+            window.assert = {
+                equal(actual, expected, msg) {
+                    if (actual !== expected) {
+                        throw new Error((msg || '断言失败') + `：期望 "${expected}"，实际 "${actual}"`);
+                    }
+                },
+                deepEqual(actual, expected, msg) {
+                    if (JSON.stringify(actual) !== JSON.stringify(expected)) {
+                        throw new Error((msg || '断言失败') + `：期望 ${JSON.stringify(expected)}，实际 ${JSON.stringify(actual)}`);
+                    }
+                },
+                truthy(val, msg) {
+                    if (!val) throw new Error(msg || '期望真值');
+                },
+                falsy(val, msg) {
+                    if (val) throw new Error(msg || '期望假值');
+                },
+                isNull(val, msg) {
+                    if (val !== null) throw new Error(msg || '期望 null');
+                },
+                approx(actual, expected, delta, msg) {
+                    if (Math.abs(actual - expected) > delta) {
+                        throw new Error((msg || '断言失败') + `：期望约 ${expected}，实际 ${actual}`);
+                    }
+                }
+            };
+
+            // 所有测试脚本注册完毕后，按顺序执行异步队列
+            window.addEventListener('load', function () {
+                runAll();
+            });
+        })();
+    </script>
+</body>
+</html>
