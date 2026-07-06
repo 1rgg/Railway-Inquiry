@@ -1659,7 +1659,7 @@
                     { name: '其他', val: seg.qt }
                 ].filter(s => s.val && s.val !== '--');
 
-                const dayText = seg.day === '0' ? '' : `(次日到达)`;
+                const dayText = (seg.day && seg.day !== '0') ? `(次日到达)` : '';
 
                 html += `
                 <div class="detail-segment">
@@ -1688,10 +1688,10 @@
                         <thead><tr>${seats.map(s => `<th>${s.name}</th>`).join('')}</tr></thead>
                         <tbody><tr>${seats.map(s => {
                             let cls = '';
-                            if (s.val === '无') cls = 'ticket-no';
+                            if (s.val === '无' || s.val === '0') cls = 'ticket-no';
                             else if (s.val === '有') cls = 'ticket-has';
                             else if (/^\d+$/.test(s.val)) cls = 'ticket-has';
-                            return `<td class="${cls}">${s.val === '有' ? '有票' : s.val === '无' ? '无票' : s.val}</td>`;
+                            return `<td class="${cls}">${s.val === '有' ? '有票' : (s.val === '无' || s.val === '0') ? '无票' : s.val}</td>`;
                         }).join('')}</tr></tbody>
                     </table>`;
                 }
@@ -1864,13 +1864,13 @@
 
             if (!seatName) return '';
 
-            if (status === '无') {
+            if (status === '无' || status === '0') {
                 cssClass = 'no-ticket';
             } else {
                 cssClass = 'has-ticket';
             }
 
-            return `<span class="tag tag-ticket ${cssClass}">${seatName} ${status === '有' ? '有票' : status === '无' ? '无票' : status + '张'}</span>`;
+            return `<span class="tag tag-ticket ${cssClass}">${seatName} ${status === '有' ? '有票' : (status === '无' || status === '0') ? '无票' : status + '张'}</span>`;
         }
 
         function toggleCard(el) {
