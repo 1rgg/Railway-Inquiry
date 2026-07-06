@@ -1,0 +1,169 @@
+请求示例
+[GET]请求示例：(以下为公共KEY，共享每分钟调用频次，请登录后使用自己的KEY独享频次)复制全部复制参数 
+https://cn.apihz.cn/api/12306/api4.php?id=10018701&key=c00e44cf2aa764f869b6d2d17f032301&add=绵阳&end=上海&y=2025&m=12&d=10&ck=
+[POST]请求示例：(请根据开发语言自行POST，参考【GET/POST教程】。)
+请求参数说明
+注意：请求编码为UTF8，否则带中文请求可能失败。一般参数不能带+号，会被自动替换为空格。参数内容较大的必须用POST，不能GET。
+提示：如发现接口有BUG，可加服务QQ群500700444，及时向我们反馈。
+提示：请求参数里的开发者ID与KEY，登录后台菜单【个人资料】里查看。
+
+id 10018701
+key c00e44cf2aa764f869b6d2d17f032301
+
+名称	参数	必填	说明
+开发者ID	id	是	用户中心的数字ID，例：id=10000000
+开发者KEY	key	是	用户中心通讯秘钥，例：key=15he5h15ty854j5sr152hs2
+出发站点	add	是	出发地或出发车站名称，例：add=绵阳
+目的站点	end	是	目的地或目的车站名称，例：end=上海
+出发日期-年	y	是	不超过预售时间，一般为15天内，出发日期-年，例：y=2025
+出发日期-月	m	是	不超过预售时间，一般为15天内，出发日期-月，例：m=6
+出发日期-日	d	是	不超过预售时间，一般为15天内，出发日期-日，例：d=30
+cookie	ck	否	不传该参数则使用平台提供的cookie，如果多次查询失败可能是平台cookie失效，可传自己的cookie，参照图片教程：https://down.erguanmingmin.com/api/img/12306ck.png，浏览器访问12306官网，打开调试模式，然后任意查询火车票，找到该链接https://kyfw.12306.cn/otn/leftTicket/queryU，取cookie里面的JSESSIONID值，只需传等号后面的字符串即可。ck=0EC5DA0C04CB6793F9C293EBF28B485B
+动态秘钥	dkey	否	开发者开启动态秘钥验证后需传此参数，主要针对直接在客户端调用接口的场景。请在官网后台菜单【个人资料】里配置。例：dkey=0cd2a494831736587c33f30d1e544371
+用户IP	uip	否	接口调用者IP，用于后台统计IP地域分布，ISP运营商，时段IP数统计等，如不传该参数则默认为接口请求端IP，该参数主要用于使用后端服务器/中间件请求接口的方式使用。例：uip=123.123.123.123。该参数彩钻/炫钻/焱钻会员专享。
+返回参数说明
+名称	参数	说明
+状态码	code	200成功，400错误。普通用户采用接口本地线路调用，成功率无保障。彩钻和炫钻用户采用本地+代理双模式调用，成功率较高。查询成功后的信息有60秒缓存期。
+提示信息	msg	提示信息
+查询模式	td	查询模式
+数据集	datas	数据集
+车组编号	datas.train_number	车组编号
+车次代码	datas.train_order	车次代码
+始发站名称	datas.star_name	始发站名称
+始发站代码	datas.star_code	始发站代码
+终点站名称	datas.end_name	终点站名称
+终点站代码	datas.end_code	终点站代码
+出发站名称	datas.depart_name	出发站名称
+出发站代码	datas.depart_code	出发站代码
+目的站名称	datas.arrive_name	目的站名称
+目的站代码	datas.arrive_code	目的站代码
+出发站出发时间	datas.depart_time	出发站出发时间
+目的站到达时间	datas.arrive_time	目的站到达时间
+日期差	datas.day_difference	日期差N天
+列车类型	datas.train_type	列车类型
+乘车时长	datas.alltime	出发站到目的站总共乘车时长
+二等座票价	datas.edz	二等座票价，0.00表示无该座位类型，下同。
+一等座票价	datas.ydz	一等座票价
+特等座商务座票价	datas.tdz	特等座商务座票价
+硬座票价	datas.yz	硬座票价
+硬卧票价	datas.yw	硬卧票价
+软卧票价	datas.rw	软卧票价
+返回数据示例
+示例：{"code":400,"msg":"通讯秘钥错误。"}
+示例：
+{
+    "code": 200,
+    "td": "本地模式",
+    "addtime": "2025-12-10",
+    "datas": [{
+        "train_number": "76000G32860A",
+        "train_order": "G3286",
+        "star_name": "成都东",
+        "star_code": "ICW",
+        "end_name": "上海虹桥",
+        "end_code": "AOH",
+        "depart_name": "绵阳",
+        "depart_code": "MYW",
+        "arrive_name": "上海虹桥",
+        "arrive_code": "AOH",
+        "depart_time": "08:32",
+        "arrive_time": "19:42",
+        "day_difference": "0",
+        "train_type": "高速",
+        "alltime": "11:10",
+        "edz": "956.00",
+        "ydz": "1526.50",
+        "tdz": "3100.50",
+        "yz": "0.00",
+        "yw": "0.00",
+        "rw": "0.00"
+    }, {
+        "train_number": "77000G32900E",
+        "train_order": "G3290",
+        "star_name": "沙坪坝",
+        "star_code": "CYW",
+        "end_name": "上海虹桥",
+        "end_code": "AOH",
+        "depart_name": "绵阳",
+        "depart_code": "MYW",
+        "arrive_name": "上海虹桥",
+        "arrive_code": "AOH",
+        "depart_time": "11:22",
+        "arrive_time": "22:47",
+        "day_difference": "0",
+        "train_type": "高速",
+        "alltime": "11:25",
+        "edz": "956.00",
+        "ydz": "1526.50",
+        "tdz": "3100.50",
+        "yz": "0.00",
+        "yw": "0.00",
+        "rw": "0.00"
+    }, {
+        "train_number": "77000G19760O",
+        "train_order": "G1976",
+        "star_name": "重庆西",
+        "star_code": "CXW",
+        "end_name": "上海虹桥",
+        "end_code": "AOH",
+        "depart_name": "绵阳",
+        "depart_code": "MYW",
+        "arrive_name": "上海虹桥",
+        "arrive_code": "AOH",
+        "depart_time": "11:46",
+        "arrive_time": "22:32",
+        "day_difference": "0",
+        "train_type": "高速",
+        "alltime": "10:46",
+        "edz": "987.00",
+        "ydz": "1579.50",
+        "tdz": "3321.50",
+        "yz": "0.00",
+        "yw": "0.00",
+        "rw": "0.00"
+    }, {
+        "train_number": "760000K2840I",
+        "train_order": "K284",
+        "star_name": "成都西",
+        "star_code": "CMW",
+        "end_name": "上海",
+        "end_code": "SHH",
+        "depart_name": "绵阳",
+        "depart_code": "MYW",
+        "arrive_name": "上海",
+        "arrive_code": "SHH",
+        "depart_time": "20:28",
+        "arrive_time": "06:53",
+        "day_difference": "2",
+        "train_type": "快速",
+        "alltime": "34:25",
+        "edz": "0.00",
+        "ydz": "0.00",
+        "tdz": "0.00",
+        "yz": "268.50",
+        "yw": "487.50",
+        "rw": "751.50"
+    }, {
+        "train_number": "760000K3520V",
+        "train_order": "K352",
+        "star_name": "成都西",
+        "star_code": "CMW",
+        "end_name": "上海松江",
+        "end_code": "IMH",
+        "depart_name": "绵阳",
+        "depart_code": "MYW",
+        "arrive_name": "上海松江",
+        "arrive_code": "IMH",
+        "depart_time": "21:23",
+        "arrive_time": "07:50",
+        "day_difference": "2",
+        "train_type": "快速",
+        "alltime": "34:27",
+        "edz": "0.00",
+        "ydz": "0.00",
+        "tdz": "0.00",
+        "yz": "263.50",
+        "yw": "477.50",
+        "rw": "735.50"
+    }]
+}

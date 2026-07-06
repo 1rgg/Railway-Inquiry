@@ -1468,8 +1468,8 @@
 
         // 渲染直达车次卡片
         function renderDirectCard(train, idx) {
-            const seatSummary = getDirectSeatSummary(train);
-            const priceTag = train.minPrice ? `<span class="tag tag-price">&yen;${train.minPrice}</span>` : '';
+            const minPrice = getDirectMinPrice(train);
+            const priceTag = minPrice ? `<span class="tag tag-price">&yen;${minPrice}</span>` : '';
 
             // 余票概览
             let ticketTag = '';

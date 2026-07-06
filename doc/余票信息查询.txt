@@ -1,0 +1,336 @@
+请求示例
+[GET]请求示例：(以下为公共KEY，共享每分钟调用频次，请登录后使用自己的KEY独享频次)复制全部复制参数 
+https://cn.apihz.cn/api/12306/api.php?id=10018701&key=c00e44cf2aa764f869b6d2d17f032301&add=绵阳&end=上海&y=2025&m=6&d=30&ck=
+[POST]请求示例：(请根据开发语言自行POST，参考【GET/POST教程】。)
+请求参数说明
+注意：请求编码为UTF8，否则带中文请求可能失败。一般参数不能带+号，会被自动替换为空格。参数内容较大的必须用POST，不能GET。
+提示：如发现接口有BUG，可加服务QQ群500700444，及时向我们反馈。
+提示：请求参数里的开发者ID与KEY，登录后台菜单【个人资料】里查看。
+
+id 10018701
+key c00e44cf2aa764f869b6d2d17f032301
+
+名称	参数	必填	说明
+开发者ID	id	是	用户中心的数字ID，例：id=10000000
+开发者KEY	key	是	用户中心通讯秘钥，例：key=15he5h15ty854j5sr152hs2
+出发站点	add	是	出发地或出发车站名称，例：add=绵阳
+目的站点	end	是	目的地或目的车站名称，例：end=上海
+出发日期-年	y	是	不超过预售时间，一般为15天内，出发日期-年，例：y=2025
+出发日期-月	m	是	不超过预售时间，一般为15天内，出发日期-月，例：m=6
+出发日期-日	d	是	不超过预售时间，一般为15天内，出发日期-日，例：d=30
+cookie	ck	否	不传该参数则使用平台提供的cookie，如果多次查询失败可能是平台cookie失效，可传自己的cookie，参照图片教程：https://down.erguanmingmin.com/api/img/12306ck.png，浏览器访问12306官网，打开调试模式，然后任意查询火车票，找到该链接https://kyfw.12306.cn/otn/leftTicket/queryU，取cookie里面的JSESSIONID值，只需传等号后面的字符串即可。ck=0EC5DA0C04CB6793F9C293EBF28B485B
+动态秘钥	dkey	否	开发者开启动态秘钥验证后需传此参数，主要针对直接在客户端调用接口的场景。请在官网后台菜单【个人资料】里配置。例：dkey=0cd2a494831736587c33f30d1e544371
+用户IP	uip	否	接口调用者IP，用于后台统计IP地域分布，ISP运营商，时段IP数统计等，如不传该参数则默认为接口请求端IP，该参数主要用于使用后端服务器/中间件请求接口的方式使用。例：uip=123.123.123.123。该参数彩钻/炫钻/焱钻会员专享。
+返回参数说明
+名称	参数	说明
+状态码	code	200成功，400错误。普通用户采用接口本地线路调用，成功率无保障。彩钻和炫钻，焱钻用户采用本地+代理双模式调用，成功率较高。查询成功后的信息有60秒缓存期。
+提示信息	msg	提示信息
+数据集	datas	数据集
+车组编号	datas.train_number	车组编号
+车次编号	datas.train_order	车次编号
+出发站点索引	datas.depart_index	出发站点索引
+目的站点索引	datas.arrive_index	目的站点索引
+出发站点名称	datas.depart_name	出发站点名称
+目的站点名称	datas.arrive_name	目的站点名称
+出发站点归属市	datas.depart_city	出发站点归属市
+目的站点归属市	datas.arrive_city	目的站点归属市
+出发站点代码	datas.depart_code	出发站点代码
+目的站点代码	datas.arrive_code	目的站点代码
+出发时间	datas.depart_time	出发时间
+目的时间	datas.arrive_time	目的时间
+总计耗时	datas.duration	总计耗时
+座位参数	datas.seatcode	座位参数
+出发日期	datas.date	出发日期
+票量数据集	datas.seats	票量数据集
+座位等级	datas.seats.type	座位等级
+座位余票	datas.seats.stock	座位余票，-1代表有票，票量充足。0代表无票。大于0代表余票数量，票量紧张。
+返回数据示例
+示例：{"code":400,"msg":"通讯秘钥错误。"}
+示例：
+{
+    "code": 200,
+    "td": "本地模式",
+    "datas": [{
+        "train_number": "G3286",
+        "train_order": "76000G32860A",
+        "depart_index": "04",
+        "arrive_index": "24",
+        "depart_name": "绵阳",
+        "arrive_name": "上海虹桥",
+        "depart_city": "绵阳",
+        "arrive_city": "上海",
+        "depart_code": "MYW",
+        "arrive_code": "AOH",
+        "depart_time": "08:32",
+        "arrive_time": "19:42",
+        "duration": "11:10",
+        "seatcode": "9MOO",
+        "date": "2025-12-15",
+        "seats": [{
+            "type": "商务座(特等座)",
+            "stock": 0
+        }, {
+            "type": "一等座",
+            "stock": 4
+        }, {
+            "type": "二等座(二等包座)",
+            "stock": -1
+        }, {
+            "type": "高级软卧",
+            "stock": 0
+        }, {
+            "type": "软卧(动卧一等卧)",
+            "stock": 0
+        }, {
+            "type": "硬卧(二等卧)",
+            "stock": 0
+        }, {
+            "type": "软座",
+            "stock": 0
+        }, {
+            "type": "硬座",
+            "stock": 0
+        }, {
+            "type": "无座",
+            "stock": 0
+        }, {
+            "type": "优选一等座",
+            "stock": 0
+        }]
+    }, {
+        "train_number": "G3290",
+        "train_order": "77000G32900E",
+        "depart_index": "06",
+        "arrive_index": "30",
+        "depart_name": "绵阳",
+        "arrive_name": "上海虹桥",
+        "depart_city": "绵阳",
+        "arrive_city": "上海",
+        "depart_code": "MYW",
+        "arrive_code": "AOH",
+        "depart_time": "11:22",
+        "arrive_time": "22:47",
+        "duration": "11:25",
+        "seatcode": "9MOO",
+        "date": "2025-12-15",
+        "seats": [{
+            "type": "商务座(特等座)",
+            "stock": 2
+        }, {
+            "type": "一等座",
+            "stock": -1
+        }, {
+            "type": "二等座(二等包座)",
+            "stock": -1
+        }, {
+            "type": "高级软卧",
+            "stock": 0
+        }, {
+            "type": "软卧(动卧一等卧)",
+            "stock": 0
+        }, {
+            "type": "硬卧(二等卧)",
+            "stock": 0
+        }, {
+            "type": "软座",
+            "stock": 0
+        }, {
+            "type": "硬座",
+            "stock": 0
+        }, {
+            "type": "无座",
+            "stock": 0
+        }, {
+            "type": "优选一等座",
+            "stock": 0
+        }]
+    }, {
+        "train_number": "G1976",
+        "train_order": "77000G19760O",
+        "depart_index": "06",
+        "arrive_index": "26",
+        "depart_name": "绵阳",
+        "arrive_name": "上海虹桥",
+        "depart_city": "绵阳",
+        "arrive_city": "上海",
+        "depart_code": "MYW",
+        "arrive_code": "AOH",
+        "depart_time": "11:46",
+        "arrive_time": "22:32",
+        "duration": "10:46",
+        "seatcode": "9MOO",
+        "date": "2025-12-15",
+        "seats": [{
+            "type": "商务座(特等座)",
+            "stock": 2
+        }, {
+            "type": "一等座",
+            "stock": 9
+        }, {
+            "type": "二等座(二等包座)",
+            "stock": -1
+        }, {
+            "type": "高级软卧",
+            "stock": 0
+        }, {
+            "type": "软卧(动卧一等卧)",
+            "stock": 0
+        }, {
+            "type": "硬卧(二等卧)",
+            "stock": 0
+        }, {
+            "type": "软座",
+            "stock": 0
+        }, {
+            "type": "硬座",
+            "stock": 0
+        }, {
+            "type": "无座",
+            "stock": 0
+        }, {
+            "type": "优选一等座",
+            "stock": 0
+        }]
+    }, {
+        "train_number": "D978",
+        "train_order": "770000D97800",
+        "depart_index": "04",
+        "arrive_index": "11",
+        "depart_name": "绵阳",
+        "arrive_name": "上海虹桥",
+        "depart_city": "绵阳",
+        "arrive_city": "上海",
+        "depart_code": "MYW",
+        "arrive_code": "AOH",
+        "depart_time": "20:27",
+        "arrive_time": "08:58",
+        "duration": "12:31",
+        "seatcode": "OFO",
+        "date": "2025-12-15",
+        "seats": [{
+            "type": "商务座(特等座)",
+            "stock": 0
+        }, {
+            "type": "一等座",
+            "stock": 0
+        }, {
+            "type": "二等座(二等包座)",
+            "stock": 5
+        }, {
+            "type": "高级软卧",
+            "stock": 0
+        }, {
+            "type": "软卧(动卧一等卧)",
+            "stock": -1
+        }, {
+            "type": "硬卧(二等卧)",
+            "stock": 0
+        }, {
+            "type": "软座",
+            "stock": 0
+        }, {
+            "type": "硬座",
+            "stock": 0
+        }, {
+            "type": "无座",
+            "stock": 0
+        }, {
+            "type": "优选一等座",
+            "stock": 0
+        }]
+    }, {
+        "train_number": "K284",
+        "train_order": "760000K2840I",
+        "depart_index": "03",
+        "arrive_index": "25",
+        "depart_name": "绵阳",
+        "arrive_name": "上海",
+        "depart_city": "绵阳",
+        "arrive_city": "上海",
+        "depart_code": "MYW",
+        "arrive_code": "SHH",
+        "depart_time": "20:28",
+        "arrive_time": "06:53",
+        "duration": "34:25",
+        "seatcode": "1431",
+        "date": "2025-12-15",
+        "seats": [{
+            "type": "商务座(特等座)",
+            "stock": 0
+        }, {
+            "type": "一等座",
+            "stock": 0
+        }, {
+            "type": "二等座(二等包座)",
+            "stock": 0
+        }, {
+            "type": "高级软卧",
+            "stock": 0
+        }, {
+            "type": "软卧(动卧一等卧)",
+            "stock": 16
+        }, {
+            "type": "硬卧(二等卧)",
+            "stock": -1
+        }, {
+            "type": "软座",
+            "stock": 0
+        }, {
+            "type": "硬座",
+            "stock": -1
+        }, {
+            "type": "无座",
+            "stock": -1
+        }, {
+            "type": "优选一等座",
+            "stock": 0
+        }]
+    }, {
+        "train_number": "K352",
+        "train_order": "760000K3520V",
+        "depart_index": "03",
+        "arrive_index": "25",
+        "depart_name": "绵阳",
+        "arrive_name": "上海松江",
+        "depart_city": "绵阳",
+        "arrive_city": "上海",
+        "depart_code": "MYW",
+        "arrive_code": "IMH",
+        "depart_time": "21:23",
+        "arrive_time": "07:50",
+        "duration": "34:27",
+        "seatcode": "3411",
+        "date": "2025-12-15",
+        "seats": [{
+            "type": "商务座(特等座)",
+            "stock": 0
+        }, {
+            "type": "一等座",
+            "stock": 0
+        }, {
+            "type": "二等座(二等包座)",
+            "stock": 0
+        }, {
+            "type": "高级软卧",
+            "stock": 0
+        }, {
+            "type": "软卧(动卧一等卧)",
+            "stock": 5
+        }, {
+            "type": "硬卧(二等卧)",
+            "stock": -1
+        }, {
+            "type": "软座",
+            "stock": 0
+        }, {
+            "type": "硬座",
+            "stock": -1
+        }, {
+            "type": "无座",
+            "stock": 0
+        }, {
+            "type": "优选一等座",
+            "stock": 0
+        }]
+    }]
+}
